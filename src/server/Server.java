@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class Server {
@@ -36,7 +37,8 @@ public class Server {
                                 usersName.add(currentUser.getUserName()); // Добавляем имя пользователя в коллекцию
                                 for (User user : users) {
                                     user.getOos().writeObject(currentUser.getUserName()+" присоединился к беседе");
-                                    user.getOos().writeObject(usersName);
+                                    user.getOos().writeObject(new ArrayList<>(usersName)); // Отправляем список пользователей клиентам
+                                    System.out.println("Отправляем список пользователей" + usersName); // Пказываем, что отправили
                                 }
                                 while (true){
                                     String request = in.readUTF(); // Ждём сообщение от пользователя
@@ -52,7 +54,7 @@ public class Server {
                                 for (User user : users) {
                                     try {
                                         user.getOos().writeObject(currentUser.getUserName()+" покинул чат");
-                                        user.getOos().writeObject(usersName);
+                                        user.getOos().writeObject(new ArrayList<>(usersName));
                                     } catch (IOException ioException) {
                                         ioException.printStackTrace();
                                     }
